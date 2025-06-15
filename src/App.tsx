@@ -11,6 +11,9 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import StudentsPage from "./pages/StudentsPage";
+import TeachersPage from "./pages/TeachersPage";
+import ClassesPage from "./pages/ClassesPage";
+import SubjectsPage from "./pages/SubjectsPage";
 import NotFound from "./pages/NotFound";
 
 // Layouts
@@ -89,7 +92,9 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="students" element={<StudentsPage />} />
-        {/* Add more protected routes here as we create them */}
+        <Route path="teachers" element={<TeachersPage />} />
+        <Route path="classes" element={<ClassesPage />} />
+        <Route path="subjects" element={<SubjectsPage />} />
       </Route>
 
       {/* Catch-all route */}

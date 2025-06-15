@@ -95,13 +95,13 @@ class SchoolManagementAPI {
 
   private async request(endpoint: string, options: RequestInit = {}): Promise<any> {
     const url = `${BASE_URL}${endpoint}`;
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...(options.headers as Record<string, string>),
     };
 
     if (this.token) {
-      headers.Authorization = `Bearer ${this.token}`;
+      headers['Authorization'] = `Bearer ${this.token}`;
     }
 
     const response = await fetch(url, {
@@ -184,6 +184,13 @@ class SchoolManagementAPI {
     });
   }
 
+  async refreshToken(refreshToken: string) {
+    return this.request('/auth/refresh', {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken }),
+    });
+  }
+
   // Students APIs
   async getStudents(params?: any) {
     const query = params ? `?${new URLSearchParams(params)}` : '';
@@ -218,6 +225,22 @@ class SchoolManagementAPI {
     return this.request(`/schools/${this.schoolId}/students/bulk`, {
       method: 'POST',
       body: JSON.stringify({ students }),
+    });
+  }
+
+  async getStudentResults(studentId: string, params?: any) {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    return this.request(`/schools/${this.schoolId}/students/${studentId}/results${query}`);
+  }
+
+  async exportStudents() {
+    return this.request(`/schools/${this.schoolId}/export/students`);
+  }
+
+  async importStudents(formData: FormData) {
+    return this.request(`/schools/${this.schoolId}/import/students`, {
+      method: 'POST',
+      body: formData,
     });
   }
 
@@ -263,6 +286,11 @@ class SchoolManagementAPI {
       method: 'POST',
       body: JSON.stringify({ classIds }),
     });
+  }
+
+  async getTeacherAvailability(examDate?: string) {
+    const query = examDate ? `?examDate=${examDate}` : '';
+    return this.request(`/schools/${this.schoolId}/teachers/availability${query}`);
   }
 
   // Classes APIs
@@ -413,6 +441,41 @@ class SchoolManagementAPI {
     });
   }
 
+  async getExamSeatAllocations(examId: string) {
+    return this.request(`/schools/${this.schoolId}/exams/${examId}/seat-allocations`);
+  }
+
+  async sendSeatAllocationNotifications(examId: string) {
+    return this.request(`/schools/${this.schoolId}/exams/${examId}/notifications/seat-allocations`, {
+      method: 'POST',
+    });
+  }
+
+  async getExamDuties(examId: string) {
+    return this.request(`/schools/${this.schoolId}/exams/${examId}/duties`);
+  }
+
+  async sendDutyNotifications(examId: string) {
+    return this.request(`/schools/${this.schoolId}/exams/${examId}/notifications/duties`, {
+      method: 'POST',
+    });
+  }
+
+  async getExamSeatAllocationReport(examId: string) {
+    return this.request(`/schools/${this.schoolId}/exams/${examId}/reports/seat-allocations`);
+  }
+
+  async getExamDutyRosterReport(examId: string) {
+    return this.request(`/schools/${this.schoolId}/exams/${examId}/reports/duty-roster`);
+  }
+
+  async bulkImportExamStudents(examId: string, students: any[]) {
+    return this.request(`/schools/${this.schoolId}/exams/${examId}/bulk-import/students`, {
+      method: 'POST',
+      body: JSON.stringify({ students }),
+    });
+  }
+
   async submitExamResults(examId: string, results: any[]) {
     return this.request(`/schools/${this.schoolId}/exams/${examId}/results`, {
       method: 'POST',
@@ -425,9 +488,122 @@ class SchoolManagementAPI {
     return this.request(`/schools/${this.schoolId}/exams/${examId}/results${query}`);
   }
 
-  async getStudentResults(studentId: string, params?: any) {
+  // Exam Rooms APIs
+  async getExamRooms(params?: any) {
     const query = params ? `?${new URLSearchParams(params)}` : '';
-    return this.request(`/schools/${this.schoolId}/students/${studentId}/results${query}`);
+    return this.request(`/schools/${this.schoolId}/exam-rooms${query}`);
+  }
+
+  async createExamRoom(data: any) {
+    return this.request(`/schools/${this.schoolId}/exam-rooms`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateExamRoom(roomId: string, data: any) {
+    return this.request(`/schools/${this.schoolId}/exam-rooms/${roomId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteExamRoom(roomId: string) {
+    return this.request(`/schools/${this.schoolId}/exam-rooms/${roomId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getExamRoomAvailability(examDate?: string) {
+    const query = examDate ? `?examDate=${examDate}` : '';
+    return this.request(`/schools/${this.schoolId}/exam-rooms/availability${query}`);
+  }
+
+  // Teacher Hierarchies APIs
+  async getTeacherHierarchies(params?: any) {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    return this.request(`/schools/${this.schoolId}/teacher-hierarchies${query}`);
+  }
+
+  async createTeacherHierarchy(data: any) {
+    return this.request(`/schools/${this.schoolId}/teacher-hierarchies`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateTeacherHierarchy(hierarchyId: string, data: any) {
+    return this.request(`/schools/${this.schoolId}/teacher-hierarchies/${hierarchyId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getTeacherHierarchyStructure() {
+    return this.request(`/schools/${this.schoolId}/teacher-hierarchies/structure`);
+  }
+
+  async assignClassesToHierarchy(hierarchyId: string, classIds: string[]) {
+    return this.request(`/schools/${this.schoolId}/teacher-hierarchies/${hierarchyId}/assign-classes`, {
+      method: 'POST',
+      body: JSON.stringify({ classIds }),
+    });
+  }
+
+  async assignSubjectsToHierarchy(hierarchyId: string, subjectIds: string[]) {
+    return this.request(`/schools/${this.schoolId}/teacher-hierarchies/${hierarchyId}/assign-subjects`, {
+      method: 'POST',
+      body: JSON.stringify({ subjectIds }),
+    });
+  }
+
+  // Notifications APIs
+  async getNotifications(params?: any) {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    return this.request(`/schools/${this.schoolId}/notifications${query}`);
+  }
+
+  async createNotification(data: any) {
+    return this.request(`/schools/${this.schoolId}/notifications`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async markNotificationAsRead(notificationId: string) {
+    return this.request(`/schools/${this.schoolId}/notifications/${notificationId}/read`, {
+      method: 'PATCH',
+    });
+  }
+
+  async markAllNotificationsAsRead() {
+    return this.request(`/schools/${this.schoolId}/notifications/mark-all-read`, {
+      method: 'PATCH',
+    });
+  }
+
+  async getNotificationStats() {
+    return this.request(`/schools/${this.schoolId}/notifications/stats`);
+  }
+
+  async createBulkNotification(data: any) {
+    return this.request(`/schools/${this.schoolId}/notifications/bulk`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // Promotions APIs
+  async processPromotions(data: any) {
+    return this.request(`/schools/${this.schoolId}/promotions/process`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getPromotions(params?: any) {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    return this.request(`/schools/${this.schoolId}/promotions${query}`);
   }
 
   // Announcements APIs
@@ -460,26 +636,67 @@ class SchoolManagementAPI {
     });
   }
 
-  // Notifications APIs
-  async getNotifications(params?: any) {
+  async getAnnouncementStats(id: string) {
+    return this.request(`/schools/${this.schoolId}/announcements/${id}/stats`);
+  }
+
+  // Holidays APIs
+  async getHolidays(params?: any) {
     const query = params ? `?${new URLSearchParams(params)}` : '';
-    return this.request(`/schools/${this.schoolId}/notifications${query}`);
+    return this.request(`/schools/${this.schoolId}/holidays${query}`);
   }
 
-  async markNotificationAsRead(notificationId: string) {
-    return this.request(`/schools/${this.schoolId}/notifications/${notificationId}/read`, {
-      method: 'PATCH',
+  async createHoliday(data: any) {
+    return this.request(`/schools/${this.schoolId}/holidays`, {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
   }
 
-  async markAllNotificationsAsRead() {
-    return this.request(`/schools/${this.schoolId}/notifications/mark-all-read`, {
-      method: 'PATCH',
+  async updateHoliday(id: string, data: any) {
+    return this.request(`/schools/${this.schoolId}/holidays/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
     });
   }
 
-  async getNotificationStats() {
-    return this.request(`/schools/${this.schoolId}/notifications/stats`);
+  async deleteHoliday(id: string) {
+    return this.request(`/schools/${this.schoolId}/holidays/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Calendar Events APIs
+  async getCalendarEvents(params?: any) {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    return this.request(`/schools/${this.schoolId}/calendar/events${query}`);
+  }
+
+  async createCalendarEvent(data: any) {
+    return this.request(`/schools/${this.schoolId}/calendar/events`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateCalendarEvent(id: string, data: any) {
+    return this.request(`/schools/${this.schoolId}/calendar/events/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteCalendarEvent(id: string) {
+    return this.request(`/schools/${this.schoolId}/calendar/events/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async updateEventAttendance(id: string, status: string) {
+    return this.request(`/schools/${this.schoolId}/calendar/events/${id}/attendance`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
   }
 
   // Admin APIs
@@ -496,6 +713,106 @@ class SchoolManagementAPI {
       method: 'PUT',
       body: JSON.stringify(data),
     });
+  }
+
+  async getSchoolAdmins() {
+    return this.request(`/admin/schools/${this.schoolId}/admins`);
+  }
+
+  async createSchoolAdmin(data: any) {
+    return this.request(`/admin/schools/${this.schoolId}/admins`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getAllSchoolAdmins(params?: any) {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    return this.request(`/admin/school-admins${query}`);
+  }
+
+  async getSchoolAdmin(id: string) {
+    return this.request(`/admin/school-admins/${id}`);
+  }
+
+  async updateSchoolAdmin(id: string, data: any) {
+    return this.request(`/admin/school-admins/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateSchoolAdminStatus(id: string, isActive: boolean) {
+    return this.request(`/admin/school-admins/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ isActive }),
+    });
+  }
+
+  // Superadmin APIs
+  async getSuperadminDashboard() {
+    return this.request('/superadmin/dashboard');
+  }
+
+  async getSuperadminAnalytics() {
+    return this.request('/superadmin/analytics');
+  }
+
+  async getAllTenants(params?: any) {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    return this.request(`/superadmin/tenants${query}`);
+  }
+
+  async getTenant(id: string) {
+    return this.request(`/superadmin/tenants/${id}`);
+  }
+
+  async createTenant(data: any) {
+    return this.request('/superadmin/tenants', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateTenant(id: string, data: any) {
+    return this.request(`/superadmin/tenants/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteTenant(id: string) {
+    return this.request(`/superadmin/tenants/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async updateTenantStatus(id: string, status: string, reason?: string) {
+    return this.request(`/superadmin/tenants/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, reason }),
+    });
+  }
+
+  async getAllUsers(params?: any) {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    return this.request(`/superadmin/users${query}`);
+  }
+
+  // System APIs
+  async getSystemHealth() {
+    return this.request('/health');
+  }
+
+  async initSuperAdmin(data: any) {
+    return this.request('/init-super-admin', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getSystemStats() {
+    return this.request('/system/stats');
   }
 
   // Utility method to set school ID
