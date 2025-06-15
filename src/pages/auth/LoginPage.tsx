@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { GraduationCap, Mail, Lock, Building2 } from 'lucide-react';
+import { GraduationCap, Mail, Lock } from 'lucide-react';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +19,31 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Extract domain from URL
+    const hostname = window.location.hostname;
+    let domain = '';
+    
+    if (hostname.includes('.')) {
+      // For subdomains like school.lovable.app, extract 'school'
+      const parts = hostname.split('.');
+      if (parts.length > 2) {
+        domain = parts[0]; // Get the subdomain
+      } else {
+        // For custom domains like school.com, use the full domain without TLD
+        domain = parts[0];
+      }
+    } else {
+      // For localhost or other cases, use the full hostname
+      domain = hostname;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      tenantDomain: domain
+    }));
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -29,8 +54,13 @@ const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.email || !formData.password || !formData.tenantDomain) {
+    if (!formData.email || !formData.password) {
       toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (!formData.tenantDomain) {
+      toast.error('Unable to determine school domain from URL');
       return;
     }
 
@@ -55,7 +85,6 @@ const LoginPage = () => {
       {/* Floating Icons */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <GraduationCap className="absolute top-20 left-20 h-8 w-8 text-blue-300 animate-bounce animation-delay-500" />
-        <Building2 className="absolute top-32 right-32 h-6 w-6 text-purple-300 animate-bounce animation-delay-1000" />
         <Mail className="absolute bottom-40 left-40 h-7 w-7 text-indigo-300 animate-bounce animation-delay-1500" />
         <Lock className="absolute bottom-32 right-20 h-5 w-5 text-blue-400 animate-bounce animation-delay-2000" />
       </div>
@@ -74,6 +103,11 @@ const LoginPage = () => {
               EduFlow
             </h1>
             <p className="text-gray-600 font-medium">Welcome back to your school management portal</p>
+            {formData.tenantDomain && (
+              <p className="text-sm text-blue-600 mt-2">
+                Signing in to: <span className="font-semibold">{formData.tenantDomain}</span>
+              </p>
+            )}
           </div>
 
           {/* Login Card with Glass Effect */}
@@ -89,23 +123,6 @@ const LoginPage = () => {
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="space-y-2 animate-slide-in-right animation-delay-500">
-                    <Label htmlFor="tenantDomain" className="text-sm font-medium text-gray-700">School Domain</Label>
-                    <div className="relative">
-                      <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="tenantDomain"
-                        name="tenantDomain"
-                        type="text"
-                        placeholder="yourschool"
-                        className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-300"
-                        value={formData.tenantDomain}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 animate-slide-in-right animation-delay-700">
                     <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -122,7 +139,7 @@ const LoginPage = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2 animate-slide-in-right animation-delay-900">
+                  <div className="space-y-2 animate-slide-in-right animation-delay-700">
                     <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -141,7 +158,7 @@ const LoginPage = () => {
 
                   <Button
                     type="submit"
-                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg animate-fade-in animation-delay-1100"
+                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg animate-fade-in animation-delay-900"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -155,7 +172,7 @@ const LoginPage = () => {
                   </Button>
                 </form>
 
-                <div className="mt-6 space-y-4 animate-fade-in animation-delay-1300">
+                <div className="mt-6 space-y-4 animate-fade-in animation-delay-1100">
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-gray-200"></div>
