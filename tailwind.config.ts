@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -84,13 +85,117 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
+				'scale-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'scale(0.95)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'scale(1)'
+					}
+				},
+				'slide-in-right': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateX(20px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateX(0)'
+					}
+				},
+				'bounce-subtle': {
+					'0%, 100%': {
+						transform: 'translateY(0)'
+					},
+					'50%': {
+						transform: 'translateY(-5px)'
+					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-10px)'
+					}
+				},
+				'glow': {
+					'0%, 100%': {
+						boxShadow: '0 0 5px rgba(59, 130, 246, 0.5)'
+					},
+					'50%': {
+						boxShadow: '0 0 20px rgba(59, 130, 246, 0.8)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.6s ease-out',
+				'scale-in': 'scale-in 0.4s ease-out',
+				'slide-in-right': 'slide-in-right 0.5s ease-out',
+				'bounce-subtle': 'bounce-subtle 2s ease-in-out infinite',
+				'float': 'float 3s ease-in-out infinite',
+				'glow': 'glow 2s ease-in-out infinite alternate'
+			},
+			animationDelay: {
+				'300': '300ms',
+				'500': '500ms',
+				'700': '700ms',
+				'900': '900ms',
+				'1100': '1100ms',
+				'1300': '1300ms',
+				'1500': '1500ms',
+				'2000': '2000ms'
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		function({ addUtilities }: any) {
+			const newUtilities = {
+				'.animation-delay-300': {
+					'animation-delay': '300ms',
+				},
+				'.animation-delay-500': {
+					'animation-delay': '500ms',
+				},
+				'.animation-delay-700': {
+					'animation-delay': '700ms',
+				},
+				'.animation-delay-900': {
+					'animation-delay': '900ms',
+				},
+				'.animation-delay-1000': {
+					'animation-delay': '1000ms',
+				},
+				'.animation-delay-1100': {
+					'animation-delay': '1100ms',
+				},
+				'.animation-delay-1300': {
+					'animation-delay': '1300ms',
+				},
+				'.animation-delay-1500': {
+					'animation-delay': '1500ms',
+				},
+				'.animation-delay-2000': {
+					'animation-delay': '2000ms',
+				},
+			}
+			addUtilities(newUtilities)
+		}
+	],
 } satisfies Config;
