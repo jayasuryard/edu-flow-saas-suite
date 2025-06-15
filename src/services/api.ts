@@ -1,4 +1,3 @@
-
 const BASE_URL = 'https://team1-test-dev.ryoforge.com/api';
 
 // Types
@@ -104,16 +103,48 @@ class SchoolManagementAPI {
       headers['Authorization'] = `Bearer ${this.token}`;
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      });
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      // Handle different response types
+      let data;
+      const contentType = response.headers.get('content-type');
+      
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        data = { message: await response.text() };
+      }
+
+      if (!response.ok) {
+        // Create a structured error
+        const error = new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
+        (error as any).status = response.status;
+        (error as any).code = data.code;
+        (error as any).response = { data, status: response.status };
+        
+        // Handle specific status codes
+        if (response.status === 401) {
+          // Token expired or invalid
+          this.token = null;
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        }
+        
+        throw error;
+      }
+
+      return data;
+    } catch (error: any) {
+      // Network errors or parsing errors
+      if (!error.status) {
+        error.message = 'Network error. Please check your connection.';
+      }
+      throw error;
     }
-
-    return response.json();
   }
 
   // Auth APIs

@@ -1,144 +1,97 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/sonner';
+import { AuthProvider } from './contexts/AuthContext';
+import { ErrorBoundaryProvider } from './hooks/useErrorBoundary';
+import DashboardLayout from './components/Layout/DashboardLayout';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import StudentsPage from './pages/StudentsPage';
+import TeachersPage from './pages/TeachersPage';
+import ClassesPage from './pages/ClassesPage';
+import SubjectsPage from './pages/SubjectsPage';
+import TimetablesPage from './pages/TimetablesPage';
+import AttendancePage from './pages/AttendancePage';
+import ExamsPage from './pages/ExamsPage';
+import ExamRoomsPage from './pages/ExamRoomsPage';
+import TeacherHierarchiesPage from './pages/TeacherHierarchiesPage';
+import NotificationsPage from './pages/NotificationsPage';
+import PromotionsPage from './pages/PromotionsPage';
+import AnnouncementsPage from './pages/AnnouncementsPage';
+import HolidaysPage from './pages/HolidaysPage';
+import CalendarPage from './pages/CalendarPage';
+import SettingsPage from './pages/SettingsPage';
+import DashboardPage from './pages/DashboardPage';
+import NotFound from './pages/NotFound';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-
-// Pages
-import LoginPage from "./pages/auth/LoginPage";
-import RegisterPage from "./pages/auth/RegisterPage";
-import DashboardPage from "./pages/DashboardPage";
-import StudentsPage from "./pages/StudentsPage";
-import TeachersPage from "./pages/TeachersPage";
-import ClassesPage from "./pages/ClassesPage";
-import SubjectsPage from "./pages/SubjectsPage";
-import TimetablesPage from "./pages/TimetablesPage";
-import AttendancePage from "./pages/AttendancePage";
-import ExamsPage from "./pages/ExamsPage";
-import ExamRoomsPage from "./pages/ExamRoomsPage";
-import TeacherHierarchiesPage from "./pages/TeacherHierarchiesPage";
-import PromotionsPage from "./pages/PromotionsPage";
-import HolidaysPage from "./pages/HolidaysPage";
-import CalendarEventsPage from "./pages/CalendarEventsPage";
-import NotificationsPage from "./pages/NotificationsPage";
-import AnnouncementsPage from "./pages/AnnouncementsPage";
-import AdminSettingsPage from "./pages/AdminSettingsPage";
-import SuperadminPage from "./pages/SuperadminPage";
-import NotFound from "./pages/NotFound";
-
-// Layouts
-import DashboardLayout from "./components/Layout/DashboardLayout";
-
-const queryClient = new QueryClient();
-
-// Protected Route Component
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
-};
-
-// Public Route Component (redirects to dashboard if already logged in)
-const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return <>{children}</>;
-};
-
-const AppRoutes = () => {
-  return (
-    <Routes>
-      {/* Public Routes */}
-      <Route 
-        path="/login" 
-        element={
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        } 
-      />
-      <Route 
-        path="/register" 
-        element={
-          <PublicRoute>
-            <RegisterPage />
-          </PublicRoute>
-        } 
-      />
-
-      {/* Protected Routes */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
+// Create a query client with better error handling
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error: any) => {
+        // Don't retry on 401, 403, or 404 errors
+        if (error?.status === 401 || error?.status === 403 || error?.status === 404) {
+          return false;
         }
-      >
-        <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="students" element={<StudentsPage />} />
-        <Route path="teachers" element={<TeachersPage />} />
-        <Route path="classes" element={<ClassesPage />} />
-        <Route path="subjects" element={<SubjectsPage />} />
-        <Route path="timetables" element={<TimetablesPage />} />
-        <Route path="attendance" element={<AttendancePage />} />
-        <Route path="exams" element={<ExamsPage />} />
-        <Route path="exam-rooms" element={<ExamRoomsPage />} />
-        <Route path="teacher-hierarchies" element={<TeacherHierarchiesPage />} />
-        <Route path="promotions" element={<PromotionsPage />} />
-        <Route path="holidays" element={<HolidaysPage />} />
-        <Route path="calendar-events" element={<CalendarEventsPage />} />
-        <Route path="notifications" element={<NotificationsPage />} />
-        <Route path="announcements" element={<AnnouncementsPage />} />
-        <Route path="admin-settings" element={<AdminSettingsPage />} />
-        <Route path="superadmin" element={<SuperadminPage />} />
-      </Route>
+        // Retry up to 2 times for other errors
+        return failureCount < 2;
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      retry: (failureCount, error: any) => {
+        // Don't retry mutations on client errors
+        if (error?.status >= 400 && error?.status < 500) {
+          return false;
+        }
+        return failureCount < 1;
+      },
+    },
+  },
+});
 
-      {/* Catch-all route */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  return (
+    <ErrorBoundaryProvider>
+      <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <AppRoutes />
+          <Router>
+            <div className="App">
+              <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/" element={<DashboardLayout />}>
+                  <Route index element={<DashboardPage />} />
+                  <Route path="dashboard" element={<DashboardPage />} />
+                  <Route path="students" element={<StudentsPage />} />
+                  <Route path="teachers" element={<TeachersPage />} />
+                  <Route path="classes" element={<ClassesPage />} />
+                  <Route path="subjects" element={<SubjectsPage />} />
+                  <Route path="timetables" element={<TimetablesPage />} />
+                  <Route path="attendance" element={<AttendancePage />} />
+                  <Route path="exams" element={<ExamsPage />} />
+                  <Route path="exam-rooms" element={<ExamRoomsPage />} />
+                  <Route path="teacher-hierarchies" element={<TeacherHierarchiesPage />} />
+                  <Route path="notifications" element={<NotificationsPage />} />
+                  <Route path="promotions" element={<PromotionsPage />} />
+                  <Route path="announcements" element={<AnnouncementsPage />} />
+                  <Route path="holidays" element={<HolidaysPage />} />
+                  <Route path="calendar" element={<CalendarPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Toaster richColors position="top-right" />
+            </div>
+          </Router>
         </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </QueryClientProvider>
+    </ErrorBoundaryProvider>
+  );
+}
 
 export default App;
