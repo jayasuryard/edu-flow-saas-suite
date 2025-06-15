@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -48,8 +47,10 @@ const DashboardLayout = () => {
     { path: '/teachers', icon: Users, label: 'Teachers', roles: ['super_admin', 'school_admin'] },
     { path: '/classes', icon: Calendar, label: 'Classes', roles: ['super_admin', 'school_admin', 'teacher'] },
     { path: '/subjects', icon: Calendar, label: 'Subjects', roles: ['super_admin', 'school_admin', 'teacher'] },
-    { path: '/exams', icon: Calendar, label: 'Exams', roles: ['super_admin', 'school_admin', 'teacher'] },
+    { path: '/timetables', icon: Calendar, label: 'Timetables', roles: ['super_admin', 'school_admin', 'teacher'] },
     { path: '/attendance', icon: Calendar, label: 'Attendance', roles: ['super_admin', 'school_admin', 'teacher'] },
+    { path: '/exams', icon: Calendar, label: 'Exams', roles: ['super_admin', 'school_admin', 'teacher'] },
+    { path: '/notifications', icon: Bell, label: 'Notifications', roles: ['super_admin', 'school_admin', 'teacher', 'student'] },
     { path: '/announcements', icon: Bell, label: 'Announcements', roles: ['super_admin', 'school_admin', 'teacher', 'student'] },
     { path: '/settings', icon: Settings, label: 'Settings', roles: ['super_admin', 'school_admin'] },
   ];

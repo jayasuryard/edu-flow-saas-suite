@@ -14,6 +14,11 @@ import StudentsPage from "./pages/StudentsPage";
 import TeachersPage from "./pages/TeachersPage";
 import ClassesPage from "./pages/ClassesPage";
 import SubjectsPage from "./pages/SubjectsPage";
+import TimetablesPage from "./pages/TimetablesPage";
+import AttendancePage from "./pages/AttendancePage";
+import ExamsPage from "./pages/ExamsPage";
+import NotificationsPage from "./pages/NotificationsPage";
+import AnnouncementsPage from "./pages/AnnouncementsPage";
 import NotFound from "./pages/NotFound";
 
 // Layouts
@@ -95,6 +100,11 @@ const AppRoutes = () => {
         <Route path="teachers" element={<TeachersPage />} />
         <Route path="classes" element={<ClassesPage />} />
         <Route path="subjects" element={<SubjectsPage />} />
+        <Route path="timetables" element={<TimetablesPage />} />
+        <Route path="attendance" element={<AttendancePage />} />
+        <Route path="exams" element={<ExamsPage />} />
+        <Route path="notifications" element={<NotificationsPage />} />
+        <Route path="announcements" element={<AnnouncementsPage />} />
       </Route>
 
       {/* Catch-all route */}
