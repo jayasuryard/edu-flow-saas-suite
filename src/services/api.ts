@@ -1,3 +1,4 @@
+
 const BASE_URL = 'https://team1-test-dev.ryoforge.com/api';
 
 // Types
@@ -96,6 +97,8 @@ class SchoolManagementAPI {
     const url = `${BASE_URL}${endpoint}`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Origin': window.location.origin,
       ...(options.headers as Record<string, string>),
     };
 
@@ -107,6 +110,8 @@ class SchoolManagementAPI {
       const response = await fetch(url, {
         ...options,
         headers,
+        mode: 'cors',
+        credentials: 'include',
       });
 
       // Handle different response types
@@ -139,8 +144,10 @@ class SchoolManagementAPI {
 
       return data;
     } catch (error: any) {
-      // Network errors or parsing errors
-      if (!error.status) {
+      // Handle CORS and network errors
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        error.message = 'Network error or CORS issue. Please check your connection and server configuration.';
+      } else if (!error.status) {
         error.message = 'Network error. Please check your connection.';
       }
       throw error;
