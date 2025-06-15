@@ -60,7 +60,13 @@ const LoginPage = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    const success = await login(data);
+    // Ensure all required fields are present
+    const loginCredentials = {
+      email: data.email,
+      password: data.password,
+      tenantDomain: data.tenantDomain
+    };
+    const success = await login(loginCredentials);
     setIsLoading(false);
 
     if (success) {
