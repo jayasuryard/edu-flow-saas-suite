@@ -40,7 +40,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Enhanced domain extraction to handle various patterns
+    // Enhanced intelligent domain extraction
     const hostname = window.location.hostname;
     let domain = '';
     
@@ -48,49 +48,112 @@ const LoginPage = () => {
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       domain = 'demo';
     } 
-    // Handle various production domain patterns
     else {
-      // Remove common prefixes like www, app, platform, portal
-      const cleanHostname = hostname.replace(/^(www\.|app\.|platform\.|portal\.)/, '');
-      
-      // Split by dots and extract the main domain part
+      // Clean hostname by removing www prefix first
+      const cleanHostname = hostname.replace(/^www\./, '');
       const parts = cleanHostname.split('.');
       
-      if (parts.length >= 2) {
-        // For patterns like:
-        // schoolname.com -> schoolname
-        // schoolname.edu -> schoolname
-        // subdomain.schoolname.com -> schoolname (if subdomain is not the school name)
-        // app.schoolname.edu -> schoolname
+      if (parts.length === 1) {
+        // Single part domain (unlikely in production)
+        domain = parts[0];
+      }
+      else if (parts.length === 2) {
+        // Direct domain patterns: schoolname.com, schoolname.edu, schoolname.app
+        domain = parts[0];
+      }
+      else if (parts.length >= 3) {
+        // Multi-part domains need intelligent detection
+        const firstPart = parts[0].toLowerCase();
+        const secondPart = parts[1].toLowerCase();
+        const thirdPart = parts.length > 2 ? parts[2].toLowerCase() : '';
         
-        if (parts.length === 2) {
-          // Direct domain like schoolname.com
-          domain = parts[0];
-        } else if (parts.length >= 3) {
-          // For subdomains, typically the second-to-last part is the school name
-          // unless the first part looks like a school name (no common subdomain prefixes)
-          const firstPart = parts[0];
-          const secondPart = parts[1];
+        // Common technical/platform subdomains that indicate school name is likely in second position
+        const technicalSubdomains = [
+          'app', 'platform', 'portal', 'admin', 'dashboard', 'student', 'teacher', 
+          'staff', 'parent', 'api', 'cdn', 'static', 'assets', 'media', 'files',
+          'mail', 'email', 'calendar', 'library', 'lms', 'sms', 'sis'
+        ];
+        
+        // Geographic/location subdomains that might indicate school name is in second position
+        const locationSubdomains = [
+          'us', 'uk', 'ca', 'au', 'north', 'south', 'east', 'west', 'central',
+          'main', 'campus', 'online', 'remote'
+        ];
+        
+        // Educational department subdomains
+        const departmentSubdomains = [
+          'admissions', 'registrar', 'financial', 'housing', 'dining', 'athletics',
+          'academics', 'research', 'alumni', 'events', 'news'
+        ];
+        
+        // All subdomains that suggest the school name is in the second part
+        const allKnownSubdomains = [
+          ...technicalSubdomains, 
+          ...locationSubdomains, 
+          ...departmentSubdomains
+        ];
+        
+        if (allKnownSubdomains.includes(firstPart)) {
+          // First part is a known subdomain, school name is likely second part
+          domain = secondPart;
+        }
+        else {
+          // First part might be the school name, but let's do additional checks
           
-          // Common subdomain prefixes that indicate the school name is likely in the second part
-          const commonSubdomains = ['www', 'app', 'platform', 'portal', 'admin', 'student', 'teacher', 'api'];
+          // Check if first part looks like a school name (longer, not generic)
+          const isFirstPartLikelySchoolName = (
+            firstPart.length > 3 && 
+            !technicalSubdomains.includes(firstPart) &&
+            !firstPart.match(/^(test|dev|staging|prod|beta|alpha|demo)$/)
+          );
           
-          if (commonSubdomains.includes(firstPart.toLowerCase())) {
+          // Check if second part looks generic or is a known platform
+          const isSecondPartGeneric = (
+            secondPart.match(/^(school|edu|university|college|academy|institute)$/) ||
+            secondPart.length <= 3
+          );
+          
+          if (isFirstPartLikelySchoolName && !isSecondPartGeneric) {
+            // First part is likely the school name
+            domain = firstPart;
+          }
+          else if (!isSecondPartGeneric) {
+            // Second part is likely the school name
             domain = secondPart;
-          } else {
-            // If first part doesn't look like a common subdomain, it might be the school name
+          }
+          else {
+            // Fallback: use first part
             domain = firstPart;
           }
         }
-      } else {
-        // Fallback to the hostname itself
-        domain = hostname;
+        
+        // Special handling for common educational TLDs in multi-part domains
+        // Example: something.schoolname.edu -> schoolname
+        if (parts.length === 3 && (thirdPart === 'edu' || thirdPart === 'ac')) {
+          if (!allKnownSubdomains.includes(firstPart)) {
+            // If first part is not a known subdomain, it might be the school name
+            // But if second part looks more like a school name, use that
+            if (secondPart.length > firstPart.length && !isSecondPartGeneric) {
+              domain = secondPart;
+            } else {
+              domain = firstPart;
+            }
+          } else {
+            domain = secondPart;
+          }
+        }
       }
     }
 
     // Clean up the domain (remove any remaining dots or invalid characters)
     domain = domain.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
     
+    // Ensure domain is not empty and not a generic term
+    if (!domain || domain.match(/^(www|app|platform|portal|admin|api|cdn|static)$/)) {
+      domain = 'school';
+    }
+    
+    console.log(`Domain extraction: ${hostname} -> ${domain}`);
     form.setValue('tenantDomain', domain);
   }, [form]);
 
