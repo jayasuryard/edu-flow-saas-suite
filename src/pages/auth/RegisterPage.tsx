@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -60,12 +59,34 @@ const RegisterPage = () => {
       return;
     }
 
-    setIsLoading(true);
-    const success = await register(formData);
-    setIsLoading(false);
+    const isFormValid = formData.schoolName && formData.domain && formData.adminEmail && formData.adminPassword;
 
-    if (success) {
-      navigate('/dashboard');
+    if (isFormValid) {
+      setIsLoading(true);
+      
+      // Convert form data to match RegisterData interface
+      const registerData = {
+        firstName: formData.adminFirstName,
+        lastName: formData.adminLastName,
+        email: formData.adminEmail,
+        password: formData.adminPassword,
+        tenantDomain: formData.domain,
+        schoolName: formData.schoolName,
+        domain: formData.domain,
+        phone: formData.phone,
+        address: formData.address,
+        adminFirstName: formData.adminFirstName,
+        adminLastName: formData.adminLastName,
+        adminEmail: formData.adminEmail,
+        adminPassword: formData.adminPassword,
+      };
+
+      const success = await register(registerData);
+      setIsLoading(false);
+
+      if (success) {
+        navigate('/dashboard');
+      }
     }
   };
 

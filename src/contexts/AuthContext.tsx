@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { api } from '../services/api';
 import { handleApiError, handleApiSuccess } from '../utils/errorHandler';
@@ -28,6 +29,20 @@ interface RegisterData {
   email: string;
   password: string;
   tenantDomain: string;
+  schoolName?: string;
+  domain?: string;
+  phone?: string;
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  adminFirstName?: string;
+  adminLastName?: string;
+  adminEmail?: string;
+  adminPassword?: string;
 }
 
 interface AuthState {
@@ -64,6 +79,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 // Create the authentication context
 interface AuthContextProps {
   state: AuthState;
+  user: User | null;
   login: (credentials: LoginCredentials) => Promise<boolean>;
   register: (data: RegisterData) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -186,6 +202,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const value: AuthContextProps = {
     state,
+    user: state.user,
     login,
     register,
     logout,

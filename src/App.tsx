@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -7,8 +8,6 @@ import { ErrorBoundaryProvider } from './hooks/useErrorBoundary';
 import DashboardLayout from './components/Layout/DashboardLayout';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
-import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import StudentsPage from './pages/StudentsPage';
 import TeachersPage from './pages/TeachersPage';
 import ClassesPage from './pages/ClassesPage';
@@ -22,8 +21,6 @@ import NotificationsPage from './pages/NotificationsPage';
 import PromotionsPage from './pages/PromotionsPage';
 import AnnouncementsPage from './pages/AnnouncementsPage';
 import HolidaysPage from './pages/HolidaysPage';
-import CalendarPage from './pages/CalendarPage';
-import SettingsPage from './pages/SettingsPage';
 import DashboardPage from './pages/DashboardPage';
 import NotFound from './pages/NotFound';
 
@@ -80,8 +77,6 @@ function App() {
                   <Route path="promotions" element={<PromotionsPage />} />
                   <Route path="announcements" element={<AnnouncementsPage />} />
                   <Route path="holidays" element={<HolidaysPage />} />
-                  <Route path="calendar" element={<CalendarPage />} />
-                  <Route path="settings" element={<SettingsPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
