@@ -17,8 +17,15 @@ import SubjectsPage from "./pages/SubjectsPage";
 import TimetablesPage from "./pages/TimetablesPage";
 import AttendancePage from "./pages/AttendancePage";
 import ExamsPage from "./pages/ExamsPage";
+import ExamRoomsPage from "./pages/ExamRoomsPage";
+import TeacherHierarchiesPage from "./pages/TeacherHierarchiesPage";
+import PromotionsPage from "./pages/PromotionsPage";
+import HolidaysPage from "./pages/HolidaysPage";
+import CalendarEventsPage from "./pages/CalendarEventsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
+import AdminSettingsPage from "./pages/AdminSettingsPage";
+import SuperadminPage from "./pages/SuperadminPage";
 import NotFound from "./pages/NotFound";
 
 // Layouts
@@ -103,8 +110,15 @@ const AppRoutes = () => {
         <Route path="timetables" element={<TimetablesPage />} />
         <Route path="attendance" element={<AttendancePage />} />
         <Route path="exams" element={<ExamsPage />} />
+        <Route path="exam-rooms" element={<ExamRoomsPage />} />
+        <Route path="teacher-hierarchies" element={<TeacherHierarchiesPage />} />
+        <Route path="promotions" element={<PromotionsPage />} />
+        <Route path="holidays" element={<HolidaysPage />} />
+        <Route path="calendar-events" element={<CalendarEventsPage />} />
         <Route path="notifications" element={<NotificationsPage />} />
         <Route path="announcements" element={<AnnouncementsPage />} />
+        <Route path="admin-settings" element={<AdminSettingsPage />} />
+        <Route path="superadmin" element={<SuperadminPage />} />
       </Route>
 
       {/* Catch-all route */}

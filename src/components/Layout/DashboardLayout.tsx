@@ -50,9 +50,15 @@ const DashboardLayout = () => {
     { path: '/timetables', icon: Calendar, label: 'Timetables', roles: ['super_admin', 'school_admin', 'teacher'] },
     { path: '/attendance', icon: Calendar, label: 'Attendance', roles: ['super_admin', 'school_admin', 'teacher'] },
     { path: '/exams', icon: Calendar, label: 'Exams', roles: ['super_admin', 'school_admin', 'teacher'] },
+    { path: '/exam-rooms', icon: Calendar, label: 'Exam Rooms', roles: ['super_admin', 'school_admin'] },
+    { path: '/teacher-hierarchies', icon: Users, label: 'Hierarchies', roles: ['super_admin', 'school_admin'] },
+    { path: '/promotions', icon: Users, label: 'Promotions', roles: ['super_admin', 'school_admin'] },
+    { path: '/holidays', icon: Calendar, label: 'Holidays', roles: ['super_admin', 'school_admin'] },
+    { path: '/calendar-events', icon: Calendar, label: 'Events', roles: ['super_admin', 'school_admin', 'teacher'] },
     { path: '/notifications', icon: Bell, label: 'Notifications', roles: ['super_admin', 'school_admin', 'teacher', 'student'] },
     { path: '/announcements', icon: Bell, label: 'Announcements', roles: ['super_admin', 'school_admin', 'teacher', 'student'] },
-    { path: '/settings', icon: Settings, label: 'Settings', roles: ['super_admin', 'school_admin'] },
+    { path: '/admin-settings', icon: Settings, label: 'Settings', roles: ['super_admin', 'school_admin'] },
+    { path: '/superadmin', icon: Settings, label: 'Super Admin', roles: ['super_admin'] },
   ];
 
   const filteredMenuItems = menuItems.filter(item => 
