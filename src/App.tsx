@@ -55,8 +55,8 @@ function App() {
   return (
     <ErrorBoundaryProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <Router>
+        <Router>
+          <AuthProvider>
             <div className="App">
               <Routes>
                 <Route path="/login" element={<LoginPage />} />
@@ -82,8 +82,8 @@ function App() {
               </Routes>
               <Toaster richColors position="top-right" />
             </div>
-          </Router>
-        </AuthProvider>
+          </AuthProvider>
+        </Router>
       </QueryClientProvider>
     </ErrorBoundaryProvider>
   );
