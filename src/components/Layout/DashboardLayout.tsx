@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../services/api';
 import { Button } from '@/components/ui/button';
@@ -20,12 +19,28 @@ import {
 import { cn } from '@/lib/utils';
 
 const DashboardLayout = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, state } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect to login if not authenticated
+  if (state.isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <span className="text-lg font-medium text-gray-700">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!state.isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
 
   useEffect(() => {
     const fetchNotifications = async () => {

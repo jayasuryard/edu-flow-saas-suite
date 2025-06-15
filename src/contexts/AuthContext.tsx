@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { api } from '../services/api';
 import { handleApiError, handleApiSuccess } from '../utils/errorHandler';
@@ -116,18 +115,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (profile.success) {
             dispatch({ type: 'LOGIN_SUCCESS', payload: profile.data });
           } else {
+            localStorage.removeItem('token');
+            localStorage.removeItem('schoolId');
             dispatch({ type: 'LOGOUT' });
           }
         } catch (error) {
           console.error('Failed to load profile:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('schoolId');
           dispatch({ type: 'LOGOUT' });
-        } finally {
-          // Set loading to false after attempting to load the profile
-          // even if it fails, to prevent the app from being stuck in a loading state.
-          dispatch({ type: 'LOGIN_START' });
         }
       } else {
-        dispatch({ type: 'LOGIN_START' });
+        dispatch({ type: 'LOGOUT' });
       }
     };
 

@@ -62,7 +62,7 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/" element={<DashboardLayout />}>
-                  <Route index element={<DashboardPage />} />
+                  <Route index element={<Navigate to="/dashboard" replace />} />
                   <Route path="dashboard" element={<DashboardPage />} />
                   <Route path="students" element={<StudentsPage />} />
                   <Route path="teachers" element={<TeachersPage />} />
