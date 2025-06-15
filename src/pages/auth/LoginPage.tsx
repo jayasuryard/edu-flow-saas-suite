@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -41,27 +40,62 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Extract domain from URL
+    // Enhanced domain extraction to handle various patterns
     const hostname = window.location.hostname;
     let domain = '';
     
-    if (hostname.includes('.')) {
-      const parts = hostname.split('.');
-      if (parts.length > 2) {
-        domain = parts[0];
+    // Handle localhost development
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      domain = 'demo';
+    } 
+    // Handle various production domain patterns
+    else {
+      // Remove common prefixes like www, app, platform, portal
+      const cleanHostname = hostname.replace(/^(www\.|app\.|platform\.|portal\.)/, '');
+      
+      // Split by dots and extract the main domain part
+      const parts = cleanHostname.split('.');
+      
+      if (parts.length >= 2) {
+        // For patterns like:
+        // schoolname.com -> schoolname
+        // schoolname.edu -> schoolname
+        // subdomain.schoolname.com -> schoolname (if subdomain is not the school name)
+        // app.schoolname.edu -> schoolname
+        
+        if (parts.length === 2) {
+          // Direct domain like schoolname.com
+          domain = parts[0];
+        } else if (parts.length >= 3) {
+          // For subdomains, typically the second-to-last part is the school name
+          // unless the first part looks like a school name (no common subdomain prefixes)
+          const firstPart = parts[0];
+          const secondPart = parts[1];
+          
+          // Common subdomain prefixes that indicate the school name is likely in the second part
+          const commonSubdomains = ['www', 'app', 'platform', 'portal', 'admin', 'student', 'teacher', 'api'];
+          
+          if (commonSubdomains.includes(firstPart.toLowerCase())) {
+            domain = secondPart;
+          } else {
+            // If first part doesn't look like a common subdomain, it might be the school name
+            domain = firstPart;
+          }
+        }
       } else {
-        domain = parts[0];
+        // Fallback to the hostname itself
+        domain = hostname;
       }
-    } else {
-      domain = hostname;
     }
 
+    // Clean up the domain (remove any remaining dots or invalid characters)
+    domain = domain.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+    
     form.setValue('tenantDomain', domain);
   }, [form]);
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    // Ensure all required fields are present
     const loginCredentials = {
       email: data.email,
       password: data.password,
