@@ -84,11 +84,11 @@ const LoginPage = () => {
 
       <div className="relative z-10 flex min-h-screen">
         {/* Left Side - Compact Branding */}
-        <div className="hidden lg:flex lg:w-3/5 xl:w-2/3 relative">
-          <div className="flex flex-col justify-center px-8 xl:px-12 py-8 w-full">
+        <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 relative">
+          <div className="flex flex-col justify-center px-6 xl:px-8 py-8 w-full">
             {/* Logo and brand */}
-            <div className="mb-8">
-              <div className="flex items-center mb-6">
+            <div className="mb-6">
+              <div className="flex items-center mb-4">
                 <div className="relative">
                   <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-3 shadow-xl transform rotate-3">
                     <GraduationCap className="h-8 w-8 text-white" />
@@ -98,60 +98,60 @@ const LoginPage = () => {
                   </div>
                 </div>
                 <div className="ml-4">
-                  <h1 className="text-4xl xl:text-5xl font-bold bg-gradient-to-r from-blue-800 to-indigo-900 bg-clip-text text-transparent">
+                  <h1 className="text-3xl xl:text-4xl font-bold bg-gradient-to-r from-blue-800 to-indigo-900 bg-clip-text text-transparent">
                     EduFlow
                   </h1>
-                  <p className="text-slate-600 text-base font-medium">Modern School Management</p>
+                  <p className="text-slate-600 text-sm font-medium">Modern School Management</p>
                 </div>
               </div>
               
-              <div className="space-y-4">
-                <h2 className="text-3xl xl:text-4xl font-bold text-slate-800 leading-tight">
+              <div className="space-y-3">
+                <h2 className="text-2xl xl:text-3xl font-bold text-slate-800 leading-tight">
                   Welcome Back to Your
                   <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     Digital Campus
                   </span>
                 </h2>
-                <p className="text-lg text-slate-600 leading-relaxed max-w-lg">
+                <p className="text-base text-slate-600 leading-relaxed max-w-lg">
                   Empowering education through intelligent management.
                 </p>
               </div>
             </div>
 
             {/* Compact Features */}
-            <div className="grid grid-cols-1 gap-4 max-w-xl">
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 shadow-lg transform hover:scale-105 transition-all duration-300 border border-white/50">
+            <div className="grid grid-cols-1 gap-3 max-w-lg">
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-3 shadow-lg transform hover:scale-105 transition-all duration-300 border border-white/50">
                 <div className="flex items-center space-x-3">
                   <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-2">
                     <BookOpen className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-slate-800">Smart Learning</h3>
-                    <p className="text-sm text-slate-600">AI-powered management</p>
+                    <h3 className="text-sm font-semibold text-slate-800">Smart Learning</h3>
+                    <p className="text-xs text-slate-600">AI-powered management</p>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 shadow-lg transform hover:scale-105 transition-all duration-300 border border-white/50 ml-6">
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-3 shadow-lg transform hover:scale-105 transition-all duration-300 border border-white/50 ml-4">
                 <div className="flex items-center space-x-3">
                   <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-2">
                     <Users className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-slate-800">Connected Community</h3>
-                    <p className="text-sm text-slate-600">Seamless collaboration</p>
+                    <h3 className="text-sm font-semibold text-slate-800">Connected Community</h3>
+                    <p className="text-xs text-slate-600">Seamless collaboration</p>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 shadow-lg transform hover:scale-105 transition-all duration-300 border border-white/50">
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-3 shadow-lg transform hover:scale-105 transition-all duration-300 border border-white/50">
                 <div className="flex items-center space-x-3">
                   <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-2">
                     <Award className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-slate-800">Excellence Tracking</h3>
-                    <p className="text-sm text-slate-600">Advanced analytics</p>
+                    <h3 className="text-sm font-semibold text-slate-800">Excellence Tracking</h3>
+                    <p className="text-xs text-slate-600">Advanced analytics</p>
                   </div>
                 </div>
               </div>
@@ -160,7 +160,7 @@ const LoginPage = () => {
         </div>
 
         {/* Right Side - Compact Login Form */}
-        <div className="w-full lg:w-2/5 xl:w-1/3 flex items-center justify-center p-3 sm:p-6">
+        <div className="w-full lg:w-1/2 xl:w-2/5 flex items-center justify-center p-4 sm:p-6">
           <div className="w-full max-w-md">
             {/* Mobile Header */}
             <div className="lg:hidden text-center mb-6">
