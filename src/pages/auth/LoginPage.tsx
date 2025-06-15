@@ -13,7 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { 
   GraduationCap, Mail, Lock, BookOpen, Users, Award, ChevronRight, School, Star, 
-  Globe2, Book, Lightbulb, Trophy, Apple, PenTool, Calculator, Microscope 
+  Globe2, Book, Lightbulb, Trophy, Apple, PenTool, Calculator, Microscope, Eye, EyeOff 
 } from 'lucide-react';
 
 const loginSchema = z.object({
@@ -27,6 +27,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -72,6 +73,10 @@ const LoginPage = () => {
     if (success) {
       navigate('/dashboard');
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -299,12 +304,28 @@ const LoginPage = () => {
                               Password
                             </FormLabel>
                             <FormControl>
-                              <Input
-                                type="password"
-                                placeholder="Enter your password"
-                                className="h-12 rounded-xl border-slate-200 bg-white/70 backdrop-blur-sm focus:border-blue-400 focus:ring-blue-400/30 transition-all duration-300 text-base shadow-lg"
-                                {...field}
-                              />
+                              <div className="relative">
+                                <Input
+                                  type={showPassword ? "text" : "password"}
+                                  placeholder="Enter your password"
+                                  className="h-12 rounded-xl border-slate-200 bg-white/70 backdrop-blur-sm focus:border-blue-400 focus:ring-blue-400/30 transition-all duration-300 text-base shadow-lg pr-12"
+                                  {...field}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={togglePasswordVisibility}
+                                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-slate-100 transition-all duration-300 group"
+                                >
+                                  <div className="relative">
+                                    {showPassword ? (
+                                      <EyeOff className="h-5 w-5 text-slate-600 group-hover:text-blue-600 transition-all duration-300 transform group-hover:scale-110" />
+                                    ) : (
+                                      <Eye className="h-5 w-5 text-slate-600 group-hover:text-blue-600 transition-all duration-300 transform group-hover:scale-110" />
+                                    )}
+                                    <div className="absolute inset-0 bg-blue-400/20 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                                  </div>
+                                </button>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>

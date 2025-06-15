@@ -13,7 +13,7 @@ import * as z from 'zod';
 import { 
   GraduationCap, Mail, Lock, Building2, User, Phone, MapPin, Globe, ChevronRight, 
   ChevronLeft, School, BookOpen, Star, Sparkles, Users, Award, Book, Apple, 
-  Calculator, Microscope, Trophy, PenTool, Lightbulb, Ruler, Palette 
+  Calculator, Microscope, Trophy, PenTool, Lightbulb, Ruler, Palette, Eye, EyeOff 
 } from 'lucide-react';
 
 const registrationSchema = z.object({
@@ -37,6 +37,7 @@ type RegistrationFormData = z.infer<typeof registrationSchema>;
 const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [showPassword, setShowPassword] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -116,6 +117,10 @@ const RegisterPage = () => {
       default:
         return [];
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const stepTitles = [
@@ -279,8 +284,8 @@ const RegisterPage = () => {
         </div>
 
         {/* Right Side - Enhanced Registration Form */}
-        <div className="w-full lg:w-3/5 xl:w-1/2 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="w-full max-w-xl my-auto">
+        <div className="w-full lg:w-3/5 xl:w-1/2 flex items-center justify-center p-3 sm:p-4">
+          <div className="w-full max-w-xl h-full flex flex-col justify-center">
             {/* Mobile Header */}
             <div className="lg:hidden text-center mb-4">
               <div className="flex items-center justify-center mb-3">
@@ -303,13 +308,13 @@ const RegisterPage = () => {
             </div>
 
             {/* Enhanced Registration Card */}
-            <div className="relative">
+            <div className="relative flex-1 flex items-center justify-center">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-2xl sm:rounded-3xl transform rotate-1 scale-105 opacity-10"></div>
               
-              <Card className="relative bg-white/90 backdrop-blur-xl shadow-2xl border-0 rounded-2xl sm:rounded-3xl overflow-hidden">
+              <Card className="relative bg-white/90 backdrop-blur-xl shadow-2xl border-0 rounded-2xl sm:rounded-3xl overflow-hidden w-full max-h-[90vh] flex flex-col">
                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"></div>
                 
-                <CardHeader className="text-center pb-4 pt-6 px-4 sm:px-6">
+                <CardHeader className="text-center pb-4 pt-6 px-4 sm:px-6 flex-shrink-0">
                   <div className="flex items-center justify-center mb-3">
                     <div className="bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl p-3 shadow-lg">
                       {React.createElement(stepIcons[currentStep - 1], { className: "h-6 w-6 text-emerald-600" })}
@@ -331,7 +336,7 @@ const RegisterPage = () => {
                   </div>
                 </CardHeader>
                 
-                <CardContent className="px-4 sm:px-6 pb-6">
+                <CardContent className="px-4 sm:px-6 pb-6 flex-1 overflow-y-auto">
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       {/* Step 1: Enhanced School Info */}
@@ -607,12 +612,28 @@ const RegisterPage = () => {
                                     Password *
                                   </FormLabel>
                                   <FormControl>
-                                    <Input
-                                      type="password"
-                                      placeholder="Create a strong password"
-                                      className="h-10 rounded-xl border-gray-300 bg-white/80 focus:border-emerald-500 focus:ring-emerald-500/30 shadow-md"
-                                      {...field}
-                                    />
+                                    <div className="relative">
+                                      <Input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Create a strong password"
+                                        className="h-10 rounded-xl border-gray-300 bg-white/80 focus:border-emerald-500 focus:ring-emerald-500/30 shadow-md pr-12"
+                                        {...field}
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={togglePasswordVisibility}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-slate-100 transition-all duration-300 group"
+                                      >
+                                        <div className="relative">
+                                          {showPassword ? (
+                                            <EyeOff className="h-4 w-4 text-slate-600 group-hover:text-emerald-600 transition-all duration-300 transform group-hover:scale-110" />
+                                          ) : (
+                                            <Eye className="h-4 w-4 text-slate-600 group-hover:text-emerald-600 transition-all duration-300 transform group-hover:scale-110" />
+                                          )}
+                                          <div className="absolute inset-0 bg-emerald-400/20 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                                        </div>
+                                      </button>
+                                    </div>
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -623,7 +644,7 @@ const RegisterPage = () => {
                       )}
 
                       {/* Enhanced Navigation Buttons */}
-                      <div className="flex justify-between pt-4">
+                      <div className="flex justify-between pt-4 flex-shrink-0">
                         {currentStep > 1 && (
                           <Button
                             type="button"
@@ -668,7 +689,7 @@ const RegisterPage = () => {
                     </form>
                   </Form>
 
-                  <div className="mt-6 text-center">
+                  <div className="mt-6 text-center flex-shrink-0">
                     <div className="text-slate-600 text-sm">
                       Already have a school account?{' '}
                       <Link
