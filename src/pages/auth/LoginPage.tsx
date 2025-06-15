@@ -84,7 +84,7 @@ const LoginPage = () => {
 
       <div className="relative z-10 flex min-h-screen">
         {/* Left Side - Compact Branding */}
-        <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 relative">
+        <div className="hidden lg:flex lg:w-3/5 xl:w-1/2 relative">
           <div className="flex flex-col justify-center px-6 xl:px-8 py-8 w-full">
             {/* Logo and brand */}
             <div className="mb-6">
@@ -159,8 +159,8 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {/* Right Side - Compact Login Form */}
-        <div className="w-full lg:w-1/2 xl:w-2/5 flex items-center justify-center p-4 sm:p-6">
+        {/* Right Side - Login Form */}
+        <div className="w-full lg:w-2/5 xl:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:pl-2">
           <div className="w-full max-w-md">
             {/* Mobile Header */}
             <div className="lg:hidden text-center mb-6">
