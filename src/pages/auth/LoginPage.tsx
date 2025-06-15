@@ -93,6 +93,12 @@ const LoginPage = () => {
           ...departmentSubdomains
         ];
         
+        // Check if second part looks generic or is a known platform
+        const isSecondPartGeneric = (
+          secondPart.match(/^(school|edu|university|college|academy|institute)$/) ||
+          secondPart.length <= 3
+        );
+        
         if (allKnownSubdomains.includes(firstPart)) {
           // First part is a known subdomain, school name is likely second part
           domain = secondPart;
@@ -102,15 +108,9 @@ const LoginPage = () => {
           
           // Check if first part looks like a school name (longer, not generic)
           const isFirstPartLikelySchoolName = (
-            firstPart.length > 3 && 
+            firstPart.length > 2 && 
             !technicalSubdomains.includes(firstPart) &&
             !firstPart.match(/^(test|dev|staging|prod|beta|alpha|demo)$/)
-          );
-          
-          // Check if second part looks generic or is a known platform
-          const isSecondPartGeneric = (
-            secondPart.match(/^(school|edu|university|college|academy|institute)$/) ||
-            secondPart.length <= 3
           );
           
           if (isFirstPartLikelySchoolName && !isSecondPartGeneric) {
