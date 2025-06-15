@@ -103,11 +103,6 @@ const LoginPage = () => {
               EduFlow
             </h1>
             <p className="text-gray-600 font-medium">Welcome back to your school management portal</p>
-            {formData.tenantDomain && (
-              <p className="text-sm text-blue-600 mt-2">
-                Signing in to: <span className="font-semibold">{formData.tenantDomain}</span>
-              </p>
-            )}
           </div>
 
           {/* Login Card with Glass Effect */}
