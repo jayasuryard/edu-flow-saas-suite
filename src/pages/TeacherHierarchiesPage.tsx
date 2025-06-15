@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tree, Plus, Edit, Users } from 'lucide-react';
+import { Trees, Plus, Edit, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface TeacherHierarchy {
@@ -123,7 +123,7 @@ const TeacherHierarchiesPage = () => {
       <div key={hierarchy.id} className={`ml-${level * 6} border-l-2 border-gray-200 pl-4 py-2`}>
         <div className="flex items-center justify-between bg-white p-3 rounded-lg border">
           <div className="flex items-center space-x-3">
-            <Tree className="h-5 w-5 text-blue-600" />
+            <Trees className="h-5 w-5 text-blue-600" />
             <div>
               <h3 className="font-medium">{hierarchy.name}</h3>
               <p className="text-sm text-gray-500">
