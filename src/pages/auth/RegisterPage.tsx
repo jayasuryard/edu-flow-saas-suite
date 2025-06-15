@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -6,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { GraduationCap, Mail, Lock, Building2, User, Phone, MapPin } from 'lucide-react';
+import { GraduationCap, Mail, Lock, Building2, User, Phone, MapPin, Globe, ChevronRight, ChevronLeft, School, BookOpen } from 'lucide-react';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -59,34 +60,29 @@ const RegisterPage = () => {
       return;
     }
 
-    const isFormValid = formData.schoolName && formData.domain && formData.adminEmail && formData.adminPassword;
+    setIsLoading(true);
+    
+    const registerData = {
+      firstName: formData.adminFirstName,
+      lastName: formData.adminLastName,
+      email: formData.adminEmail,
+      password: formData.adminPassword,
+      tenantDomain: formData.domain,
+      schoolName: formData.schoolName,
+      domain: formData.domain,
+      phone: formData.phone,
+      address: formData.address,
+      adminFirstName: formData.adminFirstName,
+      adminLastName: formData.adminLastName,
+      adminEmail: formData.adminEmail,
+      adminPassword: formData.adminPassword,
+    };
 
-    if (isFormValid) {
-      setIsLoading(true);
-      
-      // Convert form data to match RegisterData interface
-      const registerData = {
-        firstName: formData.adminFirstName,
-        lastName: formData.adminLastName,
-        email: formData.adminEmail,
-        password: formData.adminPassword,
-        tenantDomain: formData.domain,
-        schoolName: formData.schoolName,
-        domain: formData.domain,
-        phone: formData.phone,
-        address: formData.address,
-        adminFirstName: formData.adminFirstName,
-        adminLastName: formData.adminLastName,
-        adminEmail: formData.adminEmail,
-        adminPassword: formData.adminPassword,
-      };
+    const success = await register(registerData);
+    setIsLoading(false);
 
-      const success = await register(registerData);
-      setIsLoading(false);
-
-      if (success) {
-        navigate('/dashboard');
-      }
+    if (success) {
+      navigate('/dashboard');
     }
   };
 
@@ -98,196 +94,238 @@ const RegisterPage = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
+  const stepTitles = [
+    "School Information",
+    "School Location", 
+    "Administrator Account"
+  ];
+
+  const stepDescriptions = [
+    "Basic details about your educational institution",
+    "Where is your school located?",
+    "Create your administrator account"
+  ];
+
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-400/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl animate-pulse animation-delay-1000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-teal-400/20 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
-      </div>
+    <div className="min-h-screen flex">
+      {/* Left Side - School Branding */}
+      <div className="hidden lg:flex lg:w-2/5 bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-800 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 opacity-10">
+          <School className="absolute top-20 left-20 h-24 w-24 text-white" />
+          <BookOpen className="absolute top-40 right-20 h-20 w-20 text-white" />
+          <GraduationCap className="absolute bottom-32 left-16 h-28 w-28 text-white" />
+          <Building2 className="absolute bottom-20 right-24 h-16 w-16 text-white" />
+        </div>
 
-      {/* Floating Icons */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <GraduationCap className="absolute top-20 left-20 h-8 w-8 text-emerald-300 animate-bounce animation-delay-500" />
-        <Building2 className="absolute top-32 right-32 h-6 w-6 text-cyan-300 animate-bounce animation-delay-1000" />
-        <User className="absolute bottom-40 left-40 h-7 w-7 text-teal-300 animate-bounce animation-delay-1500" />
-        <Mail className="absolute bottom-32 right-20 h-5 w-5 text-emerald-400 animate-bounce animation-delay-2000" />
-      </div>
-
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-2xl space-y-8">
-          {/* Header with Animation */}
-          <div className="text-center animate-fade-in">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-full blur-xl opacity-30 scale-110 animate-pulse"></div>
-              <div className="relative bg-white rounded-full p-4 w-20 h-20 mx-auto mb-4 shadow-lg">
-                <GraduationCap className="h-12 w-12 text-emerald-600 mx-auto" />
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center px-12 py-20 text-white">
+          <div className="mb-8">
+            <div className="flex items-center mb-6">
+              <div className="bg-white/20 rounded-full p-3 mr-4">
+                <GraduationCap className="h-8 w-8 text-white" />
               </div>
+              <h1 className="text-4xl font-bold">EduFlow</h1>
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-              EduFlow
-            </h1>
-            <p className="text-gray-600 font-medium">Create your school management account</p>
+            <h2 className="text-3xl font-light mb-4">Create Your School's Digital Hub</h2>
+            <p className="text-emerald-200 text-lg leading-relaxed mb-8">
+              Join thousands of educational institutions worldwide in transforming 
+              their management systems with our comprehensive platform.
+            </p>
           </div>
 
-          {/* Progress Indicator */}
-          <div className="flex justify-center items-center space-x-4 animate-fade-in animation-delay-300">
-            {[1, 2, 3].map((step) => (
-              <div key={step} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
-                  currentStep >= step 
-                    ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white scale-110' 
-                    : 'bg-gray-200 text-gray-500'
+          {/* Step Indicator */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold mb-4">Setup Progress</h3>
+            <div className="space-y-3">
+              {stepTitles.map((title, index) => (
+                <div key={index} className={`flex items-center space-x-3 ${
+                  currentStep > index + 1 ? 'text-emerald-200' : 
+                  currentStep === index + 1 ? 'text-white' : 'text-emerald-400'
                 }`}>
-                  {step}
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    currentStep > index + 1 ? 'bg-emerald-500' :
+                    currentStep === index + 1 ? 'bg-white text-emerald-800' : 'bg-emerald-700'
+                  }`}>
+                    {index + 1}
+                  </div>
+                  <span className="font-medium">{title}</span>
                 </div>
-                {step < 3 && (
-                  <div className={`w-12 h-1 mx-2 transition-all duration-300 ${
-                    currentStep > step ? 'bg-gradient-to-r from-emerald-500 to-cyan-500' : 'bg-gray-200'
-                  }`} />
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          {/* Registration Card */}
-          <Card className="relative backdrop-blur-lg bg-white/80 shadow-2xl border-0 animate-scale-in animation-delay-500">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10 rounded-lg"></div>
-            <div className="relative z-10">
-              <CardHeader className="space-y-1 pb-6">
-                <CardTitle className="text-2xl font-bold text-center text-gray-800">
-                  {currentStep === 1 && "School Information"}
-                  {currentStep === 2 && "School Details"}
-                  {currentStep === 3 && "Administrator Account"}
-                </CardTitle>
-                <CardDescription className="text-center text-gray-600">
-                  Step {currentStep} of 3 - Set up your school management system
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Step 1: Basic School Info */}
-                  {currentStep === 1 && (
-                    <div className="space-y-4 animate-slide-in-right">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="schoolName" className="text-sm font-medium text-gray-700">School Name *</Label>
-                          <div className="relative">
-                            <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="schoolName"
-                              name="schoolName"
-                              placeholder="Enter school name"
-                              className="pl-10 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                              value={formData.schoolName}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
-                        </div>
+          {/* Benefits */}
+          <div className="space-y-3">
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-emerald-300 rounded-full mr-3"></div>
+              <span className="text-emerald-100">Streamlined Administration</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-emerald-300 rounded-full mr-3"></div>
+              <span className="text-emerald-100">Enhanced Communication</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-emerald-300 rounded-full mr-3"></div>
+              <span className="text-emerald-100">Real-time Analytics</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="domain" className="text-sm font-medium text-gray-700">Domain *</Label>
-                          <div className="relative">
-                            <GraduationCap className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="domain"
-                              name="domain"
-                              placeholder="yourschool"
-                              className="pl-10 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                              value={formData.domain}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
-                        </div>
+      {/* Right Side - Registration Form */}
+      <div className="w-full lg:w-3/5 flex items-center justify-center bg-gray-50 p-8">
+        <div className="w-full max-w-2xl">
+          {/* Mobile Header */}
+          <div className="lg:hidden text-center mb-8">
+            <div className="flex items-center justify-center mb-4">
+              <div className="bg-emerald-600 rounded-full p-3 mr-3">
+                <GraduationCap className="h-6 w-6 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900">EduFlow</h1>
+            </div>
+            <p className="text-gray-600">Create Your School Account</p>
+          </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="email" className="text-sm font-medium text-gray-700">School Email</Label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="email"
-                              name="email"
-                              type="email"
-                              placeholder="school@example.com"
-                              className="pl-10 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                              value={formData.email}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="text-center pb-6">
+              <CardTitle className="text-2xl font-bold text-gray-900">
+                {stepTitles[currentStep - 1]}
+              </CardTitle>
+              <CardDescription className="text-gray-600">
+                {stepDescriptions[currentStep - 1]}
+              </CardDescription>
+              <div className="flex justify-center mt-4">
+                <span className="text-sm text-gray-500">Step {currentStep} of 3</span>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Step 1: Basic School Info */}
+                {currentStep === 1 && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="schoolName" className="text-sm font-medium text-gray-700 flex items-center">
+                          <School className="h-4 w-4 mr-2 text-gray-500" />
+                          School Name *
+                        </Label>
+                        <Input
+                          id="schoolName"
+                          name="schoolName"
+                          placeholder="e.g. Greenwood High School"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.schoolName}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone</Label>
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="phone"
-                              name="phone"
-                              placeholder="Phone number"
-                              className="pl-10 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                              value={formData.phone}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="domain" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Globe className="h-4 w-4 mr-2 text-gray-500" />
+                          School Domain *
+                        </Label>
+                        <Input
+                          id="domain"
+                          name="domain"
+                          placeholder="e.g. greenwood"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.domain}
+                          onChange={handleChange}
+                          required
+                        />
+                        <p className="text-xs text-gray-500">This will be your school's unique identifier</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Mail className="h-4 w-4 mr-2 text-gray-500" />
+                          School Email
+                        </Label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          placeholder="info@greenwood.edu"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.email}
+                          onChange={handleChange}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="phone" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Phone className="h-4 w-4 mr-2 text-gray-500" />
+                          Phone Number
+                        </Label>
+                        <Input
+                          id="phone"
+                          name="phone"
+                          placeholder="+1 (555) 123-4567"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.phone}
+                          onChange={handleChange}
+                        />
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Step 2: Address Details */}
-                  {currentStep === 2 && (
-                    <div className="space-y-4 animate-slide-in-right">
-                      <h3 className="text-lg font-medium text-gray-900 flex items-center">
-                        <MapPin className="h-5 w-5 mr-2 text-emerald-600" />
-                        School Address
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="address.street" className="text-sm font-medium text-gray-700">Street Address</Label>
-                          <Input
-                            id="address.street"
-                            name="address.street"
-                            placeholder="Street address"
-                            className="h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                            value={formData.address.street}
-                            onChange={handleChange}
-                          />
-                        </div>
+                {/* Step 2: Address Details */}
+                {currentStep === 2 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center mb-4">
+                      <MapPin className="h-5 w-5 mr-2 text-emerald-600" />
+                      <h3 className="text-lg font-medium text-gray-900">School Address</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="address.street" className="text-sm font-medium text-gray-700">Street Address</Label>
+                        <Input
+                          id="address.street"
+                          name="address.street"
+                          placeholder="123 Education Street"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.address.street}
+                          onChange={handleChange}
+                        />
+                      </div>
 
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="address.city" className="text-sm font-medium text-gray-700">City</Label>
                           <Input
                             id="address.city"
                             name="address.city"
-                            placeholder="City"
-                            className="h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
+                            placeholder="Springfield"
+                            className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
                             value={formData.address.city}
                             onChange={handleChange}
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="address.state" className="text-sm font-medium text-gray-700">State</Label>
+                          <Label htmlFor="address.state" className="text-sm font-medium text-gray-700">State/Province</Label>
                           <Input
                             id="address.state"
                             name="address.state"
-                            placeholder="State"
-                            className="h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
+                            placeholder="California"
+                            className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
                             value={formData.address.state}
                             onChange={handleChange}
                           />
                         </div>
+                      </div>
 
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="address.zipCode" className="text-sm font-medium text-gray-700">Zip Code</Label>
+                          <Label htmlFor="address.zipCode" className="text-sm font-medium text-gray-700">Zip/Postal Code</Label>
                           <Input
                             id="address.zipCode"
                             name="address.zipCode"
-                            placeholder="Zip code"
-                            className="h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
+                            placeholder="12345"
+                            className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
                             value={formData.address.zipCode}
                             onChange={handleChange}
                           />
@@ -298,146 +336,142 @@ const RegisterPage = () => {
                           <Input
                             id="address.country"
                             name="address.country"
-                            placeholder="Country"
-                            className="h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
+                            placeholder="United States"
+                            className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
                             value={formData.address.country}
                             onChange={handleChange}
                           />
                         </div>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Step 3: Admin Account */}
-                  {currentStep === 3 && (
-                    <div className="space-y-4 animate-slide-in-right">
-                      <h3 className="text-lg font-medium text-gray-900 flex items-center">
-                        <User className="h-5 w-5 mr-2 text-emerald-600" />
-                        Administrator Information
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="adminFirstName" className="text-sm font-medium text-gray-700">First Name *</Label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="adminFirstName"
-                              name="adminFirstName"
-                              placeholder="Admin first name"
-                              className="pl-10 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                              value={formData.adminFirstName}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
-                        </div>
+                {/* Step 3: Admin Account */}
+                {currentStep === 3 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center mb-4">
+                      <User className="h-5 w-5 mr-2 text-emerald-600" />
+                      <h3 className="text-lg font-medium text-gray-900">Administrator Details</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="adminFirstName" className="text-sm font-medium text-gray-700">First Name *</Label>
+                        <Input
+                          id="adminFirstName"
+                          name="adminFirstName"
+                          placeholder="John"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.adminFirstName}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="adminLastName" className="text-sm font-medium text-gray-700">Last Name *</Label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="adminLastName"
-                              name="adminLastName"
-                              placeholder="Admin last name"
-                              className="pl-10 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                              value={formData.adminLastName}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="adminLastName" className="text-sm font-medium text-gray-700">Last Name *</Label>
+                        <Input
+                          id="adminLastName"
+                          name="adminLastName"
+                          placeholder="Smith"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.adminLastName}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="adminEmail" className="text-sm font-medium text-gray-700">Admin Email *</Label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="adminEmail"
-                              name="adminEmail"
-                              type="email"
-                              placeholder="admin@example.com"
-                              className="pl-10 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                              value={formData.adminEmail}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="adminEmail" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Mail className="h-4 w-4 mr-2 text-gray-500" />
+                          Email Address *
+                        </Label>
+                        <Input
+                          id="adminEmail"
+                          name="adminEmail"
+                          type="email"
+                          placeholder="admin@greenwood.edu"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.adminEmail}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="adminPassword" className="text-sm font-medium text-gray-700">Admin Password *</Label>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="adminPassword"
-                              name="adminPassword"
-                              type="password"
-                              placeholder="Strong password"
-                              className="pl-10 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
-                              value={formData.adminPassword}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="adminPassword" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Lock className="h-4 w-4 mr-2 text-gray-500" />
+                          Password *
+                        </Label>
+                        <Input
+                          id="adminPassword"
+                          name="adminPassword"
+                          type="password"
+                          placeholder="Create a strong password"
+                          className="h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          value={formData.adminPassword}
+                          onChange={handleChange}
+                          required
+                        />
                       </div>
                     </div>
-                  )}
-
-                  {/* Navigation Buttons */}
-                  <div className="flex justify-between pt-6">
-                    {currentStep > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={prevStep}
-                        className="px-6 py-2 h-12 border-emerald-200 text-emerald-600 hover:bg-emerald-50 transition-all duration-300"
-                      >
-                        Previous
-                      </Button>
-                    )}
-                    
-                    {currentStep < 3 ? (
-                      <Button
-                        type="button"
-                        onClick={nextStep}
-                        className="ml-auto px-6 py-2 h-12 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white transition-all duration-300 transform hover:scale-105"
-                      >
-                        Next Step
-                      </Button>
-                    ) : (
-                      <Button
-                        type="submit"
-                        className="ml-auto px-6 py-2 h-12 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white transition-all duration-300 transform hover:scale-105"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <div className="flex items-center space-x-2">
-                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            <span>Creating Account...</span>
-                          </div>
-                        ) : (
-                          'Create School Account'
-                        )}
-                      </Button>
-                    )}
                   </div>
-                </form>
+                )}
 
-                <div className="mt-6 text-center animate-fade-in">
-                  <div className="text-sm text-gray-600">
-                    Already have an account?{' '}
-                    <Link
-                      to="/login"
-                      className="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors duration-200"
+                {/* Navigation Buttons */}
+                <div className="flex justify-between pt-6">
+                  {currentStep > 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={prevStep}
+                      className="px-6 py-2 h-12 border-emerald-300 text-emerald-700 hover:bg-emerald-50 flex items-center"
                     >
-                      Sign in here
-                    </Link>
-                  </div>
+                      <ChevronLeft className="h-4 w-4 mr-2" />
+                      Previous
+                    </Button>
+                  )}
+                  
+                  {currentStep < 3 ? (
+                    <Button
+                      type="button"
+                      onClick={nextStep}
+                      className="ml-auto px-6 py-2 h-12 bg-emerald-600 hover:bg-emerald-700 text-white flex items-center"
+                    >
+                      Continue
+                      <ChevronRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      className="ml-auto px-6 py-2 h-12 bg-emerald-600 hover:bg-emerald-700 text-white"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center space-x-2">
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          <span>Creating Account...</span>
+                        </div>
+                      ) : (
+                        'Create School Account'
+                      )}
+                    </Button>
+                  )}
                 </div>
-              </CardContent>
-            </div>
+              </form>
+
+              <div className="mt-6 text-center">
+                <div className="text-sm text-gray-600">
+                  Already have an account?{' '}
+                  <Link
+                    to="/login"
+                    className="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors duration-200"
+                  >
+                    Sign in here
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
           </Card>
         </div>
       </div>
